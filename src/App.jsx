@@ -1,11 +1,11 @@
-import Home from "./pages/Home";
-import styles from "./App.module.css";
+import PublicApp from "./app";
+import "./standalone.css";
 
 const App = () => {
     return (
-        <div className={styles.wrapper}>
-            <Home />
-        </div>
+        <main className="standaloneApp">
+            <PublicApp />
+        </main>
     );
 };
 
