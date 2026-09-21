@@ -1,4 +1,4 @@
-import PublicApp from "./app";
+import PublicApp from "./app/index.jsx";
 import "./standalone.css";
 
 const App = () => {
