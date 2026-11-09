@@ -54,6 +54,8 @@
                 font-size: 1.4rem;
                 line-height: 1.6;
             }
+
+
         }
 
         .randomButton {
@@ -85,6 +87,15 @@
                 border-color: var(--color-border-strong);
             }
         }
+    }
+
+    .notice {
+        margin-top: 8px;
+
+        color: var(--color-muted);
+
+        font-size: 1.2rem;
+        line-height: 1.5;
     }
 
     .workspace {

@@ -14,15 +14,21 @@ const STORAGE_KEY = "a2rp-color-picker-current-color";
 const DEFAULT_COLOR = "#7C3AED";
 
 const getInitialColor = () => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    try {
+        const saved = window.localStorage.getItem(STORAGE_KEY);
 
-    return normalizeHex(saved) || DEFAULT_COLOR;
+        return normalizeHex(saved) || DEFAULT_COLOR;
+    } catch {
+        return DEFAULT_COLOR;
+    }
 };
 
 const ColorPicker = () => {
     const [color, setColor] = useState(getInitialColor);
     const [inputValue, setInputValue] = useState(color);
     const [copiedValue, setCopiedValue] = useState("");
+    const [copyError, setCopyError] = useState(false);
+    const [storageAvailable, setStorageAvailable] = useState(true);
 
     const colorListRef = useRef(null);
     const colorItemRefs = useRef({});
@@ -44,7 +50,11 @@ const ColorPicker = () => {
     const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, color);
+        try {
+            window.localStorage.setItem(STORAGE_KEY, color);
+        } catch {
+            setStorageAvailable(false);
+        }
     }, [color]);
 
     useEffect(() => {
@@ -83,13 +93,18 @@ const ColorPicker = () => {
     };
 
     const copyValue = async (value) => {
-        await navigator.clipboard.writeText(value);
+        setCopyError(false);
 
-        setCopiedValue(value);
+        try {
+            await navigator.clipboard.writeText(value);
+            setCopiedValue(value);
 
-        window.setTimeout(() => {
-            setCopiedValue("");
-        }, 1200);
+            window.setTimeout(() => {
+                setCopiedValue("");
+            }, 1200);
+        } catch {
+            setCopyError(true);
+        }
     };
 
     const colorValues = [
@@ -118,6 +133,13 @@ const ColorPicker = () => {
                     <p className={styles.text}>
                         Pick a predefined CSS color or create your own.
                     </p>
+
+                    {!storageAvailable && (
+                        <p className={styles.notice} role="status">
+                            Browser storage is unavailable. Your selection will
+                            not be saved after you leave this page.
+                        </p>
+                    )}
                 </div>
 
                 <button
@@ -256,6 +278,13 @@ const ColorPicker = () => {
                             </div>
                         ))}
                     </div>
+
+                    {copyError && (
+                        <p className={styles.notice} role="status">
+                            Clipboard access failed. You can select and copy
+                            the value manually.
+                        </p>
+                    )}
                 </div>
             </div>
         </section>

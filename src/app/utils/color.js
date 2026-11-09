@@ -1,7 +1,7 @@
 let colorContext = null;
 
 export const normalizeHex = (value) => {
-    const hex = String(value).trim().replace("#", "");
+    const hex = String(value).trim().replace(/^#/, "");
 
     if (/^[0-9a-f]{3}$/i.test(hex)) {
         return `#${hex
